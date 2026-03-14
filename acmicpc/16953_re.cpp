@@ -3,56 +3,39 @@
 
 using namespace std;
 
-/*
-2 162가 입력되면 
-2 4 21 8 81 42 211 가 순서대로 queue에 들어감 
-여기서 이제 162보다 크면 다 queue에 추가 안하게 
-*/
-
-int bfs(int a, int b)
+int bfs(long long a, long long b)
 {
-    queue<int> q;
-    int count = 0;
-    q.push(a);
+    queue<pair<long long,int>> q;
+    q.push({a,1}); // 시작값, 연산횟수+1 (문제 조건)
 
     while(!q.empty())
     {
-
-        int front = q.front();
+        long long cur = q.front().first;
+        int cnt = q.front().second;
         q.pop();
 
-        int twice = front*2;
-        int add1 = front*10 +1;
+        if(cur == b)
+            return cnt;
 
-        if(front == b)
-        {
-            return count;
-        }
-        if(twice <= b)
-        {
-            count++;
-            q.push(twice);
-        }
-        if(add1 <= b)
-        {
-            count++;
-            q.push(add1);
-        }
-        
+        long long op1 = cur * 2;
+        long long op2 = cur * 10 + 1;
+
+        if(op1 <= b)
+            q.push({op1, cnt + 1});
+
+        if(op2 <= b)
+            q.push({op2, cnt + 1});
     }
 
     return -1;
 }
 
-
 int main()
 {
-    int a,b;
+    long long a, b;
     cin >> a >> b;
 
     cout << bfs(a,b);
 
     return 0;
-
-
 }
