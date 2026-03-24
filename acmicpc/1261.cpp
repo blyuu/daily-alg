@@ -5,10 +5,14 @@
 
 using namespace std;
 
+int dx[4] = {1,0,-1,0};
+int dy[4] = {0,1,0,-1};
+
 
 int bfs(vector<vector<int>>& v1,vector<vector<int>>& dist,int x, int y)
 {
     deque<pair<int,int>> dq;
+
 
     int row = v1.size();
     int col = v1[0].size();
@@ -24,62 +28,36 @@ int bfs(vector<vector<int>>& v1,vector<vector<int>>& dist,int x, int y)
 
         dq.pop_front();
 
-        if(valX+1 < dist[0].size() && v1[valY][valX+1] == 1 &&  dist[valY][valX+1] > dist[valY][valX])
+        for(int i = 0; i <4 ; i++)
         {
-            dist[valY][valX+1] = dist[valY][valX] + 1;
-            dq.push_back({valY, valX+1});
+            int ny = valY +dy[i];
+            int nx = valX +dx[i]; 
+
+            if(ny >= 0 && ny< row && nx >=0 && nx < col)
+            {
+                int count = v1[ny][nx];
+
+                if(dist[ny][nx] > dist[valY][valX] + count)
+                {
+                    dist[ny][nx] = dist[valY][valX] + count;
+
+                    if(count == 0)
+                    {
+                        dq.push_front({ny,nx});
+                    }
+                    else
+                    {
+                        dq.push_back({ny,nx});
+                    }
+                    
+                }
+            }
         }
 
-        if(valY+1 < dist.size() && v1[valY+1][valX] == 1 &&  dist[valY+1][valX] > dist[valY][valX])
-        {
-            dist[valY+1][valX] = dist[valY][valX] + 1;
-            dq.push_back({valY+1, valX});
-        }
-
-        if(valY-1 >=0 && v1[valY-1][valX] == 1 &&  dist[valY-1][valX] > dist[valY][valX])
-        {
-            dist[valY-1][valX] = dist[valY][valX] + 1;
-            dq.push_back({valY-1, valX});
-        }
-
-        if(valX-1 >=0 && v1[valY][valX-1] == 1 &&  dist[valY][valX-1] > dist[valY][valX])
-        {
-            dist[valY][valX-1] = dist[valY][valX] + 1;
-            dq.push_back({valY, valX-1});
-        }
-
-
-        if(valX+1 < dist[0].size() && v1[valY][valX+1] == 0 &&  dist[valY][valX+1] > dist[valY][valX])
-        {
-            dist[valY][valX+1] = dist[valY][valX];
-            dq.push_front({valY, valX+1});
-        }
-
-        if(valY+1 < dist.size() && v1[valY+1][valX] == 0 &&  dist[valY+1][valX] > dist[valY][valX])
-        {
-            dist[valY+1][valX] = dist[valY][valX];
-            dq.push_front({valY+1, valX});
-        }
-
-        if(valY-1 >=0 && v1[valY-1][valX] == 0 &&  dist[valY-1][valX] > dist[valY][valX])
-        {
-            dist[valY-1][valX] = dist[valY][valX];
-            dq.push_front({valY-1, valX});
-        }
-
-        if(valX-1 >=0 && v1[valY][valX-1] == 0 &&  dist[valY][valX-1] > dist[valY][valX])
-        {
-            dist[valY][valX-1] = dist[valY][valX];
-            dq.push_front({valY, valX-1});
-        }
-        
     }
 
-    int answer = dist[row-1][col-1];
-
-    return answer;
+    return dist[row-1][col-1];
 }
-
 
 int main()
 {
