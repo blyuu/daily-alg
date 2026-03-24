@@ -1,54 +1,61 @@
 #include <iostream>
+#include <vector>
 #include <deque>
 
 using namespace std;
 
-int bfs(int start, int end)
+int MAX = 100000;
+long long bfs(long long start, long long end)
 {
-    int list[100000];
-    for(int i = 0; i < 100000; i++)
-    {
-        list[i] = 1e9;   // 충분히 큰 값
-    }
-    list[start] = 0;
-    deque<int> dq;
+
+    vector<long long> distrecord(MAX, 1e9);
+
+    distrecord[start] = 0;
+
+    deque<long long> dq;
+
     dq.push_front(start);
 
     while(!dq.empty())
     {
-       int now = dq.front();
-       dq.pop_front();
+        long long val = dq.front();
+        dq.pop_front();
 
-        if(now*2 < 100000 && list[now*2] > list[now])
+        if(val == end)
         {
-            list[now*2] = list[now];
-            dq.push_front(now*2);
+            break;
         }
 
-        if(now+1 < 100000 && list[now+1] > list[now] + 1)
+        if(val*2 < MAX && distrecord[val] < distrecord[val*2])
         {
-            list[now+1] = list[now]+1;
-            dq.push_back(now+1);
+            distrecord[val*2] = distrecord[val];
+            dq.push_front(val*2);
         }
 
-        if(now-1 >= 0 && list[now-1] > list[now] + 1)
+        if(distrecord[val] < distrecord[val+1] && val+1 <MAX)
         {
-            list[now-1] = list[now]+1;
-            dq.push_back(now-1);
+            distrecord[val+1]= distrecord[val]+1;
+            dq.push_back(val+1);
         }
-
+        if(distrecord[val] < distrecord[val-1] && val-1 >=0)
+        {
+            distrecord[val-1] = distrecord[val]+1;
+            dq.push_back(val-1);
+        }
     }
 
-    return list[end];
+    return distrecord[end];
 }
 
 int main()
 {
-    int a,b;
+    long long start, end;
 
-    cin >> a >> b;
+    cin >> start >> end;
 
-    cout << bfs(a,b);
+    long long result = bfs(start,end);
+
+    cout << result << endl;
 
     return 0;
 
